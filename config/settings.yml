@@ -1,4 +1,4 @@
-TODO_plugin_name:
-  plugin_name_enabled:
+discourse_post_folding:
+  discourse_post_folding_enabled:
     default: false
     client: true

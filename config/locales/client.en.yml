@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          TODO_plugin_name: "Plugin Name"
+          discourse_post_folding: "Discourse Post Folding"
   js:
-    discourse_plugin_name:
+    discourse_post_folding:
       placeholder: placeholder

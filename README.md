@@ -1,4 +1,4 @@
-# **Plugin Name** Plugin
+# **Discourse Post Folding** Plugin
 
 **Plugin Summary**
 
