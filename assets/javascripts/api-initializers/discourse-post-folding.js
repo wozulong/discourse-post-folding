@@ -49,7 +49,11 @@ export default apiInitializer("1.16.0", (api) => {
   api.addPostAdminMenuButton((attrs) => {
     const currentUser = api.getCurrentUser();
 
-    if (!currentUser?.can_manipulate_post_folding) {
+    if (attrs.post_number === 1) {
+      return;
+    }
+
+    if (!currentUser?.can_fold_post) {
       return;
     }
 

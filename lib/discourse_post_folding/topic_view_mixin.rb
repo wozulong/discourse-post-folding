@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DiscoursePostFolding
   module TopicViewMixin
     extend ActiveSupport::Concern

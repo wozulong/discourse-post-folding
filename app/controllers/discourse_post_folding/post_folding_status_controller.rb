@@ -5,13 +5,19 @@ module ::DiscoursePostFolding
     requires_plugin PLUGIN_NAME
 
     def create
-      unless guardian.can_manipulate_post_folding?
+      unless guardian.can_fold_post?
         return(
           render json: { success: false, message: "no permisson", post_id: post.id }, status: 403
         )
       end
 
       post = ::Post.find_by(id: params[:id].to_i)
+
+      if post.post_number == 1
+        return(
+          render json: { success: false, message: "cannot fold op", post_id: post.id }, status: 403
+        )
+      end
 
       if post.nil?
         return(
@@ -43,7 +49,7 @@ module ::DiscoursePostFolding
     end
 
     def destroy
-      unless guardian.can_manipulate_post_folding?
+      unless guardian.can_fold_post?
         return(
           render json: { success: false, message: "no permisson", post_id: post.id }, status: 403
         )

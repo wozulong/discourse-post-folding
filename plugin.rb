@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # name: discourse-post-folding
-# about: TODO
+# about: Allow collapsing some posts
 # meta_topic_id: TODO
 # version: 0.0.1
-# authors: Discourse
-# url: TODO
-# required_version: 2.7.0
+# authors: Linca
+# url: https://github.com/Lhcfl/discourse-post-folding
+# required_version: 3.3.0
 
 enabled_site_setting :discourse_post_folding_enabled
 
@@ -34,13 +34,11 @@ after_initialize do
     ::TopicView.prepend ::DiscoursePostFolding::TopicViewMixin
   end
 
-  add_to_class(:user, :can_manipulate_post_folding?) do
-    in_any_groups? SiteSetting.discourse_post_folding_manipulatable_groups_map
+  add_to_class(:user, :can_fold_post?) do
+    in_any_groups? SiteSetting.discourse_post_folding_can_fold_post_groups_map
   end
 
-  add_to_class(:guardian, :can_manipulate_post_folding?) do
-    user && user.can_manipulate_post_folding?
-  end
+  add_to_class(:guardian, :can_fold_post?) { user && user.can_fold_post? }
 
   add_to_serializer(:post, :post_folding_status) do
     ::DiscoursePostFolding::PostFoldingStatusSerializer.new(object.post_folding_status).as_json(
@@ -48,7 +46,5 @@ after_initialize do
     )
   end
 
-  add_to_serializer(:current_user, :can_manipulate_post_folding) do
-    object.can_manipulate_post_folding?
-  end
+  add_to_serializer(:current_user, :can_fold_post) { object.can_fold_post? }
 end
