@@ -61,7 +61,9 @@ export default apiInitializer("1.16.0", (api) => {
 
     return {
       action: (post) => {
-        if (post.post) { post = post.post; }
+        if (post.post) {
+          post = post.post;
+        }
         ajax(`/discourse-post-folding/status/${post.id}`, {
           type: folded ? "DELETE" : "PUT",
           data: {},
@@ -85,8 +87,10 @@ export default apiInitializer("1.16.0", (api) => {
     };
   }
 
-  api.addPostMenuButton('coffee', (attrs) => {
-    if (attrs.canManage || attrs.canWiki || attrs.canEditStaffNotes) { return; }
+  api.addPostMenuButton("coffee", (attrs) => {
+    if (attrs.canManage || attrs.canWiki || attrs.canEditStaffNotes) {
+      return;
+    }
     return makeButton(attrs);
   });
 
