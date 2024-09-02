@@ -49,11 +49,19 @@ export default apiInitializer("1.16.0", (api) => {
   function makeButton(attrs) {
     const currentUser = api.getCurrentUser();
 
+    let canFold = false;
+
     if (attrs.post_number === 1) {
       return;
     }
+    if (currentUser == null) {
+      return;
+    }
 
-    if (!currentUser?.can_fold_post) {
+    canFold ||= currentUser?.can_fold_post;
+    canFold ||= attrs.topic?.topic_op_admin_status?.can_fold_posts;
+
+    if (!canFold) {
       return;
     }
 

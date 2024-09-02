@@ -4,14 +4,19 @@ module ::DiscoursePostFolding
   class PostFoldingStatusController < ::ApplicationController
     requires_plugin PLUGIN_NAME
 
+    def has_perm(post)
+      res = guardian.can_fold_post?
+      res ||= guardian.can_fold_post_as_op? post.topic if guardian.respond_to? :can_fold_post_as_op?
+    end
+
     def create
-      unless guardian.can_fold_post?
+      post = ::Post.find_by(id: params[:id].to_i)
+
+      unless has_perm(post)
         return(
           render json: { success: false, message: "no permisson", post_id: post.id }, status: 403
         )
       end
-
-      post = ::Post.find_by(id: params[:id].to_i)
 
       if post.post_number == 1
         return(
@@ -49,13 +54,14 @@ module ::DiscoursePostFolding
     end
 
     def destroy
-      unless guardian.can_fold_post?
+      post = Post.find_by(id: params[:id])
+
+      unless has_perm(post)
         return(
           render json: { success: false, message: "no permisson", post_id: post.id }, status: 403
         )
       end
 
-      post = Post.find_by(id: params[:id])
       ps = PostFoldingStatus.find_by(post_id: post.id)
 
       if ps.present?
