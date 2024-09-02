@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 DiscoursePostFolding::Engine.routes.draw do
-  get "/examples" => "examples#index"
+  put "/status/:id" => "post_folding_status#create"
+  delete "/status/:id" => "post_folding_status#destroy"
   # define routes here
 end
 
-Discourse::Application.routes.draw { mount ::DiscoursePostFolding::Engine, at: "discourse-post-folding" }
+Discourse::Application.routes.draw do
+  mount ::DiscoursePostFolding::Engine, at: "discourse-post-folding"
+end

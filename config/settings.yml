@@ -2,3 +2,9 @@ discourse_post_folding:
   discourse_post_folding_enabled:
     default: false
     client: true
+  discourse_post_folding_manipulatable_groups:
+    default: "1|2|3|14" # by order: @admin, @moderators, @staff, @trust_level_4
+    client: false
+    type: group_list
+    list_type: compact
+    allow_any: false

@@ -1,4 +1,4 @@
-en:
+zh_CN:
   admin_js:
     admin:
       site_settings:
@@ -7,6 +7,6 @@ en:
   js:
     discourse_post_folding:
       fold:
-        title: Fold Post
+        title: 折叠帖子
       expand:
-        title: Unfold Post
+        title: 取消折叠帖子
