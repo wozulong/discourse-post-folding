@@ -59,7 +59,9 @@ export default apiInitializer("1.16.0", (api) => {
     }
 
     canFold ||= currentUser?.can_fold_post;
-    canFold ||= attrs.topic?.topic_op_admin_status?.can_fold_posts;
+    canFold ||=
+      attrs.topic?.topic_op_admin_status?.can_fold_posts &&
+      currentUser.id === attrs.topic.user_id;
 
     if (!canFold) {
       return;
