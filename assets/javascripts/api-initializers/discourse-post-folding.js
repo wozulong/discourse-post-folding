@@ -46,7 +46,7 @@ export default apiInitializer("1.16.0", (api) => {
     }
   });
 
-  api.addPostAdminMenuButton((attrs) => {
+  function makeButton(attrs) {
     const currentUser = api.getCurrentUser();
 
     if (attrs.post_number === 1) {
@@ -61,6 +61,7 @@ export default apiInitializer("1.16.0", (api) => {
 
     return {
       action: (post) => {
+        if (post.post) { post = post.post; }
         ajax(`/discourse-post-folding/status/${post.id}`, {
           type: folded ? "DELETE" : "PUT",
           data: {},
@@ -80,6 +81,18 @@ export default apiInitializer("1.16.0", (api) => {
       label: folded
         ? "discourse_post_folding.expand.title"
         : "discourse_post_folding.fold.title",
+      position: "second-last-hidden",
     };
+  }
+
+  api.addPostMenuButton('coffee', (attrs) => {
+    if (attrs.canManage || attrs.canWiki || attrs.canEditStaffNotes) { return; }
+    return makeButton(attrs);
+  });
+
+  api.addPostAdminMenuButton((attrs) => {
+    if (attrs.canManage || attrs.canWiki || attrs.canEditStaffNotes) {
+      return makeButton(attrs);
+    }
   });
 });

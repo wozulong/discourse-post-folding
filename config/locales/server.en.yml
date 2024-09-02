@@ -1,1 +1,4 @@
 en:
+  site_settings:
+    discourse_post_folding_enabled: Enable post folding
+    discourse_post_folding_can_fold_post_groups: Groups that can fold posts
