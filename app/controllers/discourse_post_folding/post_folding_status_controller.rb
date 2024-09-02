@@ -7,6 +7,7 @@ module ::DiscoursePostFolding
     def has_perm(post)
       res = guardian.can_fold_post?
       res ||= guardian.can_fold_post_as_op? post.topic if guardian.respond_to? :can_fold_post_as_op?
+      res
     end
 
     def create
