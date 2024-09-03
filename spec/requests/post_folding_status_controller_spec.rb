@@ -22,52 +22,50 @@ RSpec.describe DiscoursePostFolding::PostFoldingStatusController do
   fab!(:post_1) { Fabricate(:post, topic: topic, post_number: 1) }
   fab!(:post_2) { Fabricate(:post, topic: topic, post_number: 2) }
 
-  context "when user-autonomy-plugin is not instaled" do
-    context "when user is not from allowed groups" do
-      it "results 403" do
-        sign_in(user_in_non_allowed_group)
+  context "when user is not from allowed groups" do
+    it "results 403" do
+      sign_in(user_in_non_allowed_group)
+      put "/discourse-post-folding/status/#{post_2.id}.json", params: {}
+      expect(response.status).to eq(403)
+      expect(response.parsed_body["message"]).to eq("no permisson")
+      expect(DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_2.id).present?).to eq(
+        false,
+      )
+      delete "/discourse-post-folding/status/#{post_2.id}.json", params: {}
+      expect(response.status).to eq(403)
+      expect(response.parsed_body["message"]).to eq("no permisson")
+    end
+  end
+
+  context "when user is from allowed groups" do
+    shared_examples "login as user" do |user, type|
+      it "allows user in #{type}" do
+        sign_in(self.send(user))
         put "/discourse-post-folding/status/#{post_2.id}.json", params: {}
-        expect(response.status).to eq(403)
-        expect(response.parsed_body["message"]).to eq("no permisson")
+        expect(response.status).to eq(200)
+        expect(DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_2.id).present?).to eq(
+          true,
+        )
+        delete "/discourse-post-folding/status/#{post_2.id}.json", params: {}
+        expect(response.status).to eq(200)
         expect(DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_2.id).present?).to eq(
           false,
         )
-        delete "/discourse-post-folding/status/#{post_2.id}.json", params: {}
-        expect(response.status).to eq(403)
-        expect(response.parsed_body["message"]).to eq("no permisson")
       end
     end
 
-    context "when user is from allowed groups" do
-      shared_examples "login as user" do |user, type|
-        it "allows user in #{type}" do
-          sign_in(self.send(user))
-          put "/discourse-post-folding/status/#{post_2.id}.json", params: {}
-          expect(response.status).to eq(200)
-          expect(
-            DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_2.id).present?,
-          ).to eq(true)
-          delete "/discourse-post-folding/status/#{post_2.id}.json", params: {}
-          expect(response.status).to eq(200)
-          expect(
-            DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_2.id).present?,
-          ).to eq(false)
-        end
-      end
+    include_examples "login as user", :admin, "admin"
+    include_examples "login as user", :non_admin_staff, "non_admin_staff"
+    include_examples "login as user", :allowed_user, "allowed_user"
 
-      include_examples "login as user", :admin, "staff"
-      include_examples "login as user", :non_admin_staff, "staff"
-      include_examples "login as user", :allowed_user, "staff"
-
-      it "rejects when user try to fold op" do
-        sign_in(admin)
-        put "/discourse-post-folding/status/#{post_1.id}.json", params: {}
-        expect(response.status).to eq(403)
-        expect(response.parsed_body["message"]).to eq("cannot fold op")
-        expect(DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_1.id).present?).to eq(
-          false,
-        )
-      end
+    it "rejects when user try to fold op" do
+      sign_in(admin)
+      put "/discourse-post-folding/status/#{post_1.id}.json", params: {}
+      expect(response.status).to eq(403)
+      expect(response.parsed_body["message"]).to eq("cannot fold op")
+      expect(DiscoursePostFolding::PostFoldingStatus.find_by(post_id: post_1.id).present?).to eq(
+        false,
+      )
     end
   end
 end
