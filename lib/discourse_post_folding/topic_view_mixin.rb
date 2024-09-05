@@ -11,6 +11,12 @@ module DiscoursePostFolding
       def setup_filtered_posts
         setup_filtered_posts_old
 
+        # Filter replies
+        return if @replies_to_post_number.present?
+
+        # Username filters
+        return if @username_filters.present?
+
         if SiteSetting.discourse_post_folding_enabled && @filter.to_s != "unfold_all"
           @contains_gaps = true
           @filtered_posts =
