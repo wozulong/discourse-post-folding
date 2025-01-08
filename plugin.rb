@@ -6,7 +6,6 @@
 # version: 0.0.1
 # authors: Linca
 # url: https://github.com/Lhcfl/discourse-post-folding
-# required_version: 3.3.0
 
 enabled_site_setting :discourse_post_folding_enabled
 
